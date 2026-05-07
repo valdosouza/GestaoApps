@@ -1,0 +1,289 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish be committed into version control
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# iOS/macOS
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Icon??
+**/ios/**/Icon???
+**/ios/**/Icon????
+**/ios/**/Icon?????
+**/ios/**/Icon???.png
+**/ios/**/Icon????.png
+**/ios/**/Icon?????.png
+**/ios/**/Icon??????.png
+**/ios/**/Icon???????.png
+**/ios/**/Icon????????.png
+**/ios/**/Icon?????????.png
+**/ios/**/Icon.png
+**/ios/**/Icon?.png
+**/ios/**/Icon??.png
+**/ios/**/Icon???.png
+**/ios/**/Icon????.png
+**/ios/**/Icon?????.png
+**/ios/**/Icon??????.png
+**/ios/**/Icon???????.png
+**/ios/**/Icon????????.png
+**/ios/**/Icon?????????.png
+**/ios/**/Icon?????????.png
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/*.xcconfig
+**/ios/**/*.xcworkspace/
+**/ios/**/.generated.xcconfig
+**/ios/**/Flutter/Flutter.framework
+**/ios/**/Flutter/Flutter.podspec
+
+# Android/Gradle
+**/android/**/gradle-wrapper.jar
+**/android/.gradle/
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+
+# iOS/macOS
+**/ios/**/.gitignore
+**/ios/**/.dart_tool/
+**/ios/**/.flutter-plugins
+**/ios/**/.flutter-plugins-dependencies
+**/ios/**/.packages
+**/ios/**/.pod-checksum
+**/ios/**/Flutter/Flutter.podspec
+**/ios/**/Flutter/Flutter.framework
+
+# macOS
+macos/Flutter/GeneratedPluginRegistrant.dart
+
+# Web
+lib/generated_plugin_registrant.dart
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Drift generated files
+*.g.dart
+*.freezed.dart
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Generated files
+generated/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+.env.local
+.env.*.local
+
+# Backup files
+*.bak
+*.swp
+*~
+
+# Temporary files
+*.tmp
+
+# ===== SENSITIVE DATA - NEVER COMMIT =====
+# API Keys and Credentials
+.env
+.env.*
+!.env.example
+.env.local
+.env.*.local
+.env.production.local
+secrets.json
+secrets.yaml
+credentials.json
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+
+# Firebase & Google Services
+google-services.json
+GoogleService-Info.plist
+firebase-config.json
+serviceAccountKey.json
+
+# AWS & Cloud Credentials
+.aws/
+.aws/credentials
+.aws/config
+.azure/
+
+# OAuth & API Tokens
+.oauth/
+oauth.json
+tokens.json
+refresh_token.json
+
+# Database & Server Config
+database.conf
+server.conf
+connection.string
+datasource.properties
+
+# Local Configuration
+android/local.properties
+ios/local.properties
+local.properties
+
+# Build & Cache Files
+pubspec.lock
+**/pubspec.lock
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+**/build/
+.gradle/
+*.gradle
+
+# Generated/Compiled Files
+*.apk
+*.aab
+*.ipa
+*.app
+*.deb
+*.exe
+.symlinks/
+.dart_tool/
+.packages
+lib/generated_plugin_registrant.dart
+
+# IDE Specific (keep only if not shared)
+.idea/
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.iml
+*.iws
+*.ipr
+.gradle/
+.classpath
+.c9/
+*.launch
+.settings/
+.project
+.pydevproject
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*~
+
+# Backup Files
+*.bak
+*.backup
+*~
+*.tmp
+*.temp
+*.swp
+
+# Log Files
+*.log
+*.logs
+log/
+logs/
+
+# Dependency Lock Files (optional - comment if you need to commit)
+# pubspec.lock
+# package-lock.json
+# yarn.lock
+
+# Test Coverage
+coverage/
+.coverage/
+lcov.info
+
+# Node (if used)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python (if used)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+ENV/
+
+# Ruby (if used)
+.ruby-version
+.ruby-gemset
+Gemfile.lock

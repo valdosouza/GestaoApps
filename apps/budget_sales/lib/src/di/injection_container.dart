@@ -1,13 +1,3 @@
-import 'package:get_it/get_it.dart';
-import 'package:core/core.dart';
-
-final getIt = GetIt.instance;
-
-/// Configura as dependências específicas do app
-void setupAppInjection() {
-  // TODO: Adicionar dependências específicas do app
-  // Repositories
-  // UseCases
-  // Cubits
-  // etc.
-}
+// Dependency injection is handled by flutter_modular via BudgetModule.
+// See: lib/src/features/budget/budget_module.dart
+// and: lib/main.dart (ModularApp initialization)

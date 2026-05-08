@@ -20,7 +20,7 @@ class AuthRepositoryImpl implements AuthRepository {
           await datasource.login(username: username, password: password);
       return Right(result);
     } on ServerException {
-      return Left(ServerFailure());
+      return const Left(ServerFailure());
     }
   }
 }

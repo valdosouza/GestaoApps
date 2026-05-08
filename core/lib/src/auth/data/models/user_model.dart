@@ -7,24 +7,27 @@ part 'user_model.g.dart';
 @JsonSerializable()
 class UserModel extends User {
   const UserModel({
-    required String id,
-    required String name,
-    required String email,
-    String? phone,
-    String? avatarUrl,
-    bool isActive = true,
-    required DateTime createdAt,
-    DateTime? updatedAt,
-  }) : super(
-    id: id,
-    name: name,
-    email: email,
-    phone: phone,
-    avatarUrl: avatarUrl,
-    isActive: isActive,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-  );
+    required super.id,
+    required super.name,
+    required super.email,
+    required super.createdAt,
+    super.phone,
+    super.avatarUrl,
+    super.isActive = true,
+    super.updatedAt,
+  });
+
+  /// Converte uma User entity para UserModel
+  factory UserModel.fromEntity(User user) => UserModel(
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt,
+        phone: user.phone,
+        avatarUrl: user.avatarUrl,
+        isActive: user.isActive,
+        updatedAt: user.updatedAt,
+      );
 
   /// Cria um UserModel a partir do JSON
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -32,18 +35,4 @@ class UserModel extends User {
 
   /// Converte o UserModel para JSON
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
-
-  /// Converte uma User entity para UserModel
-  factory UserModel.fromEntity(User user) {
-    return UserModel(
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      avatarUrl: user.avatarUrl,
-      isActive: user.isActive,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    );
-  }
 }

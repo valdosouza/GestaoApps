@@ -7,16 +7,15 @@ class AuthChangePasswordModel extends AuthChangePasswordEntity {
     required super.newPassword,
   });
 
-  factory AuthChangePasswordModel.fromJson(Map<String, dynamic> json) {
-    return AuthChangePasswordModel(
-      tbUserId: json['tbUserId'],
-      salt: json['salt'] as String? ?? "",
-      newPassword: json['newPassword'] as String? ?? "",
-    );
-  }
+  factory AuthChangePasswordModel.fromJson(Map<String, dynamic> json) =>
+      AuthChangePasswordModel(
+        tbUserId: json['tbUserId'],
+        salt: json['salt'] as String? ?? '',
+        newPassword: json['newPassword'] as String? ?? '',
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final data = <String, dynamic>{};
     data['tb_user_id'] = tbUserId;
     data['salt'] = salt;
     data['newPassword'] = newPassword;

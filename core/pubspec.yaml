@@ -15,7 +15,6 @@ dependencies:
     sdk: flutter
 
   # DI e rotas
-  get_it: ^8.3.0
   flutter_modular: ^5.0.3
   modular_bloc_bind: ^1.0.1
   injectable: ^2.7.1
@@ -30,6 +29,7 @@ dependencies:
 
   # HTTP
   http: ^1.6.0
+  crypto: ^3.0.6
 
   # Utilitários
   intl: ^0.20.2
@@ -51,6 +51,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.29
   path_provider: ^2.1.5
   path: ^1.9.1
+  json_annotation: ^4.11.0
 
 dev_dependencies:
   flutter_test:

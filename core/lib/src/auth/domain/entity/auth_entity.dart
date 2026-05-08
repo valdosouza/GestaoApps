@@ -9,15 +9,6 @@
 /// }
 /// ```
 class AuthEntity {
-  final bool authenticated;
-  final int id;
-  final String name;
-  final String login;
-  final String level;
-  final String active;
-  final int salesmanId;
-  final String error;
-
   const AuthEntity({
     required this.authenticated,
     required this.id,
@@ -29,14 +20,22 @@ class AuthEntity {
     required this.error,
   });
 
-  static AuthEntity empty() => const AuthEntity(
-        authenticated: false,
-        id: 0,
-        name: '',
-        login: '',
-        level: '',
-        active: '',
-        salesmanId: 0,
-        error: '',
-      );
+  const AuthEntity.empty()
+      : authenticated = false,
+        id = 0,
+        name = '',
+        login = '',
+        level = '',
+        active = '',
+        salesmanId = 0,
+        error = '';
+
+  final bool authenticated;
+  final int id;
+  final String name;
+  final String login;
+  final String level;
+  final String active;
+  final int salesmanId;
+  final String error;
 }

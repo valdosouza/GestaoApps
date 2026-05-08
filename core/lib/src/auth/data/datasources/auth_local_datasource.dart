@@ -25,13 +25,13 @@ abstract class AuthLocalDataSource {
 
 /// Implementação da data source local usando SharedPreferences
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
+  AuthLocalDataSourceImpl({required SharedPreferences preferences})
+      : _preferences = preferences;
+
   static const String _userKey = 'cached_user';
   static const String _tokenKey = 'auth_token';
 
   final SharedPreferences _preferences;
-
-  AuthLocalDataSourceImpl({required SharedPreferences preferences})
-      : _preferences = preferences;
 
   @override
   Future<void> saveUser(UserModel user) async {
@@ -42,7 +42,9 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<UserModel?> getUser() async {
     final json = _preferences.getString(_userKey);
-    if (json == null) return null;
+    if (json == null) {
+      return null;
+    }
 
     try {
       final data = jsonDecode(json) as Map<String, dynamic>;
@@ -58,9 +60,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<String?> getToken() async {
-    return _preferences.getString(_tokenKey);
-  }
+  Future<String?> getToken() async => _preferences.getString(_tokenKey);
 
   @override
   Future<void> clear() async {
@@ -69,7 +69,5 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<bool> hasUser() async {
-    return _preferences.containsKey(_userKey);
-  }
+  Future<bool> hasUser() async => _preferences.containsKey(_userKey);
 }

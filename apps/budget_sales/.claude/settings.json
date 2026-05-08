@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/GestaoApps/BudgetSales/budget_sales_app/lib/app/core/interfaces/**)",
+      "Read(//d/GestaoApps/BudgetSales/budget_sales_app/lib/app/core/database/**)",
+      "Bash(Get-ChildItem -Path \"D:\\\\GestaoERPApps\\\\core\\\\lib\" -Recurse -Name)",
+      "Read(//d/GestaoERPApps/core/**)",
+      "Bash(flutter analyze *)",
+      "Bash(dart pub *)",
+      "Bash(dart run *)",
+      "Bash(flutter pub *)",
+      "Bash(Test-Path \"D:\\\\GestaoERPApps\\\\core\\\\lib\\\\database\\\\app_database.dart\")",
+      "Bash(flutter run *)",
+      "Bash(Get-Content \"C:\\\\Users\\\\Valdo\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--GestaoERPApps-apps-budget-sales\\\\da82d7c2-9eaf-4abf-a0fa-f2c15fa7b113\\\\tasks\\\\b1se1w7py.output\" -Wait)",
+      "Bash(Select-String -Pattern \"Running|Syncing|Installing|launched|Error|error|FAILED|Exception|flutter: \")",
+      "Bash(flutter create *)",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Valdo\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--GestaoERPApps-apps-budget-sales\\\\da82d7c2-9eaf-4abf-a0fa-f2c15fa7b113\\\\tasks\\\\bxe9s54wg.output' -Wait | Select-String -Pattern 'Syncing|Installing|launched|Running|Error|error|FAILED|Exception|flutter:'\")",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Valdo\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--GestaoERPApps-apps-budget-sales\\\\da82d7c2-9eaf-4abf-a0fa-f2c15fa7b113\\\\tasks\\\\b72ob0mpu.output' -Wait | Select-String -Pattern 'Syncing|Installing|launched|Running on|To hot|Error|error|FAILED|Exception|BUILD'\")",
+      "Bash(flutter clean *)",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Valdo\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--GestaoERPApps-apps-budget-sales\\\\da82d7c2-9eaf-4abf-a0fa-f2c15fa7b113\\\\tasks\\\\b0ivb24ce.output' -Wait | Select-String -Pattern 'Syncing|Installing|launched|Running on|To hot reload|Error|error|FAILED|Exception|BUILD FAILED|BUILD SUCCESS'\")",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Valdo\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--GestaoERPApps-apps-budget-sales\\\\da82d7c2-9eaf-4abf-a0fa-f2c15fa7b113\\\\tasks\\\\b2kwga0w9.output' -Wait | Select-String -Pattern 'Syncing|Installing|launched|Running on|To hot|Error|error|FAILED|Exception|BUILD'\")",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Valdo\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--GestaoERPApps-apps-budget-sales\\\\da82d7c2-9eaf-4abf-a0fa-f2c15fa7b113\\\\tasks\\\\b2kwga0w9.output' -Wait | Select-String -Pattern 'Syncing files|To hot reload|flutter: |E/flutter|FATAL|Error'\")"
+    ],
+    "additionalDirectories": [
+      "D:\\GestaoERPApps\\core\\lib\\error",
+      "D:\\GestaoERPApps\\core\\lib\\shared",
+      "D:\\GestaoERPApps\\core\\lib",
+      "D:\\GestaoApps\\BudgetSales\\budget_sales_app\\lib\\app\\core\\database"
+    ]
+  }
+}

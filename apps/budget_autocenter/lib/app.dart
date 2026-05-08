@@ -1,28 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'src/di/injection_container.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({required this.deps, Key? key}) : super(key: key);
+
+  final AppDependencies deps;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'AutoCenter Orçamento',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        useMaterial3: true,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(value: deps.core.authRepository),
+      ],
+      child: MaterialApp(
+        title: 'AutoCenter Orçamento',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.orange,
+          useMaterial3: true,
+        ),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('pt', 'BR'),
+          Locale('en', 'US'),
+        ],
+        home: const HomeScreen(),
       ),
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('pt', 'BR'),
-        Locale('en', 'US'),
-      ],
-      home: const HomeScreen(),
     );
   }
 }

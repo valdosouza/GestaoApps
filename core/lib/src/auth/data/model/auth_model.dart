@@ -22,8 +22,10 @@ class AuthModel extends AuthEntity {
     super.error = '',
   });
 
+  AuthModel.empty() : this();
+
   factory AuthModel.fromJson(Map<String, dynamic> json) {
-    final bool authenticated = json['authenticated'] == true;
+    final authenticated = json['authenticated'] == true;
 
     if (!authenticated) {
       return AuthModel(
@@ -46,8 +48,12 @@ class AuthModel extends AuthEntity {
   }
 
   static int _toInt(dynamic value) {
-    if (value == null) return 0;
-    if (value is int) return value;
+    if (value == null) {
+      return 0;
+    }
+    if (value is int) {
+      return value;
+    }
     return int.tryParse(value.toString()) ?? 0;
   }
 
@@ -62,6 +68,4 @@ class AuthModel extends AuthEntity {
           'salesmanId': salesmanId,
         },
       };
-
-  static AuthModel empty() => const AuthModel();
 }

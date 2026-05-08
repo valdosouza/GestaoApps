@@ -1,8 +1,6 @@
 // Core Library - Módulo compartilhado para Apps ERP
 // Exportações centralizadas de todos os módulos
 
-library core;
-
 // ===== SPLASH MODULE =====
 // Domain
 export 'src/splash/domain/repository/splash_respository.dart';
@@ -48,7 +46,6 @@ export 'src/auth/data/repository/auth_repository_impl.dart';
 // Presentation - BLoC
 export 'src/auth/presentation/bloc/auth_bloc.dart';
 export 'src/auth/presentation/bloc/auth_event.dart';
-export 'src/auth/presentation/bloc/auth_state.dart';
 
 // Presentation - Pages
 export 'src/auth/presentation/page/auth_page.dart';

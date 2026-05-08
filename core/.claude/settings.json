@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"D:\\\\GestaoApps\\\\BudgetSales\\\\budget_sales_app\\\\lib\" -type f -name \"*.dart\" | wc -l)",
+      "Read(//d/GestaoApps/BudgetSales/budget_sales_app/lib/**)",
+      "Bash(flutter analyze *)",
+      "Bash(ls \"D:\\\\GestaoERPApps\" 2>&1)",
+      "Read(//d/GestaoERPApps/**)",
+      "PowerShell(cd \"D:\\\\GestaoERPApps\\\\core\"; $result = flutter analyze 2>&1; $result | Where-Object { $_ -match \"^\\\\s+error\" }; Write-Host \"---SUMMARY---\"; $result | Select-Object -Last 5)",
+      "Bash(dart analyze *)"
+    ],
+    "additionalDirectories": [
+      "D:\\GestaoERPApps\\apps\\budget_autocenter"
+    ]
+  }
+}

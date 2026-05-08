@@ -7,9 +7,9 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
 class LoginEmail implements UseCase<AuthEntity, LoginParams> {
-  final AuthRepository repository;
-
   LoginEmail({required this.repository});
+
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, AuthEntity>> call(LoginParams params) async {
@@ -19,19 +19,19 @@ class LoginEmail implements UseCase<AuthEntity, LoginParams> {
         password: params.password,
       );
     } on ServerException {
-      return Left(ServerFailure());
+      return const Left(ServerFailure());
     }
   }
 }
 
 class LoginParams extends Equatable {
-  final String username;
-  final String password;
-
   const LoginParams({
     required this.username,
     required this.password,
   });
+
+  final String username;
+  final String password;
 
   @override
   List<Object?> get props => [username, password];

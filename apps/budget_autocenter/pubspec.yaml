@@ -25,6 +25,10 @@ dependencies:
 
   # UI
   flutter_modular: ^5.0.3
+  modular_bloc_bind: ^1.0.1
+
+  # HTTP
+  http: ^1.6.0
 
   # Funcional (usado pelo core/modules)
   equatable: ^2.0.8

@@ -5,9 +5,9 @@ import '../repositories/auth_repository.dart';
 
 /// Use case para realizar login
 class LoginUseCase {
-  final AuthRepository repository;
-
   LoginUseCase(this.repository);
+
+  final AuthRepository repository;
 
   /// Executa o login com email e senha
   Future<Either<Failure, User>> call({
@@ -16,7 +16,7 @@ class LoginUseCase {
   }) async {
     // Validação básica
     if (email.isEmpty || password.isEmpty) {
-      return Left(
+      return const Left(
         Failure(
           message: 'Email e senha são obrigatórios',
           code: 'INVALID_INPUT',
@@ -24,6 +24,6 @@ class LoginUseCase {
       );
     }
 
-    return await repository.login(email: email, password: password);
+    return repository.login(email: email, password: password);
   }
 }

@@ -2,6 +2,17 @@ import 'package:equatable/equatable.dart';
 
 /// Entidade que representa um usuário no sistema
 class User extends Equatable {
+  const User({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.createdAt,
+    this.phone,
+    this.avatarUrl,
+    this.isActive = true,
+    this.updatedAt,
+  });
+
   final String id;
   final String name;
   final String email;
@@ -10,17 +21,6 @@ class User extends Equatable {
   final bool isActive;
   final DateTime createdAt;
   final DateTime? updatedAt;
-
-  const User({
-    required this.id,
-    required this.name,
-    required this.email,
-    this.phone,
-    this.avatarUrl,
-    this.isActive = true,
-    required this.createdAt,
-    this.updatedAt,
-  });
 
   @override
   List<Object?> get props => [
@@ -44,16 +44,14 @@ class User extends Equatable {
     bool? isActive,
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) {
-    return User(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      email: email ?? this.email,
-      phone: phone ?? this.phone,
-      avatarUrl: avatarUrl ?? this.avatarUrl,
-      isActive: isActive ?? this.isActive,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
-  }
+  }) => User(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        email: email ?? this.email,
+        createdAt: createdAt ?? this.createdAt,
+        phone: phone ?? this.phone,
+        avatarUrl: avatarUrl ?? this.avatarUrl,
+        isActive: isActive ?? this.isActive,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
 }

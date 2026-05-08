@@ -1,4 +1,4 @@
-import 'package:budget_sales/src/core/shared/helpers/local_storage.dart';
+import 'package:core/shared/helpers/local_storage.dart';
 import 'package:budget_sales/src/features/budget/domain/entity/budget_entity.dart';
 import 'package:budget_sales/src/features/budget/domain/entity/budget_item_entity.dart';
 import 'package:budget_sales/src/features/budget/domain/usecase/budget_usecases.dart';

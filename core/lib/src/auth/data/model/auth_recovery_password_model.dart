@@ -6,24 +6,19 @@ class AuthRecoveryPasswordModel extends AuthRecoveryPasswordEntity {
     required super.email,
   });
 
-  factory AuthRecoveryPasswordModel.fromJson(Map<String, dynamic> json) {
-    return AuthRecoveryPasswordModel(
-      tbUserId: json['tb_user_id'],
-      email: json['email'] as String? ?? "",
-    );
-  }
+  AuthRecoveryPasswordModel.empty()
+      : this(tbUserId: 0, email: '');
+
+  factory AuthRecoveryPasswordModel.fromJson(Map<String, dynamic> json) =>
+      AuthRecoveryPasswordModel(
+        tbUserId: json['tb_user_id'],
+        email: json['email'] as String? ?? '',
+      );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final data = <String, dynamic>{};
     data['tb_user_id'] = tbUserId;
     data['email'] = email;
     return data;
-  }
-
-  factory AuthRecoveryPasswordModel.empty() {
-    return AuthRecoveryPasswordModel(
-      tbUserId: 0,
-      email: "",
-    );
   }
 }

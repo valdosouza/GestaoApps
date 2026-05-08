@@ -1,5 +1,5 @@
-import 'package:budget_sales/src/core/shared/local_storage_key.dart';
-import 'package:budget_sales/src/core/shared/helpers/local_storage.dart';
+import 'package:core/shared/local_storage_key.dart';
+import 'package:core/shared/helpers/local_storage.dart';
 import 'package:budget_sales/src/features/budget/domain/entity/budget_entity.dart';
 import 'package:budget_sales/src/features/budget/domain/entity/budget_item_entity.dart';
 import 'package:budget_sales/src/features/budget/presentation/bloc/budget_register_bloc.dart';

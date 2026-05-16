@@ -8,6 +8,12 @@ import 'package:modular_bloc_bind/modular_bloc_bind.dart';
 import 'package:http/http.dart' as http;
 
 class AuthModule extends Module {
+  AuthModule({this.onSuccessRoute = '/budget/'});
+
+  /// Rota para navegar após login bem-sucedido.
+  /// Padrão: '/budget/' para manter compatibilidade com o app de orçamento.
+  final String onSuccessRoute;
+
   @override
   List<Bind> get binds => [
         Bind.singleton<AuthDatasourceImpl>(
@@ -26,6 +32,9 @@ class AuthModule extends Module {
 
   @override
   List<ModularRoute> get routes => [
-        ChildRoute('/', child: (_, args) => const AuthPage()),
+        ChildRoute(
+          '/',
+          child: (_, args) => AuthPage(onSuccessRoute: onSuccessRoute),
+        ),
       ];
 }

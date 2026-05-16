@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Fundo degradê azul igual ao splash Flutter -->
+    <item android:drawable="@android:color/white" />
+
+    <!-- Logomarca centralizada no splash nativo (antes do Flutter carregar) -->
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/ic_launcher" />
+    </item>
+</layer

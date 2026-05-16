@@ -11,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   # Core compartilhado
   core:
@@ -21,10 +23,11 @@ dependencies:
   flutter_bloc: ^8.1.6
 
   # Navigation
-  go_router: ^14.0.0
-
-  # UI
   flutter_modular: ^5.0.3
+  modular_bloc_bind: ^1.0.1
+
+  # HTTP
+  http: ^1.6.0
 
   # Funcional (usado pelo core/modules)
   equatable: ^2.0.8
@@ -54,9 +57,25 @@ dev_dependencies:
   # Testing
   mocktail: ^1.0.4
 
-  # Code generation (para json_serializable)
+  # Code generation
   build_runner: ^2.11.1
   json_serializable: ^6.11.2
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: OpenSans
+      fonts:
+        - asset: fonts/ttf/OpenSans-Regular.ttf
+        - asset: fonts/ttf/OpenSans-Bold.ttf
+          weight: 700
+        - asset: fonts/ttf/OpenSans-Italic.ttf
+          style: italic
+        - asset: fonts/ttf/OpenSans-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: fonts/ttf/OpenSans-Light.ttf
+          weight: 300
+        - asset: fonts/ttf/OpenSans-SemiBold.ttf
+          weight: 600

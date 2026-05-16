@@ -11,11 +11,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({super.key, this.bloc});
+  const AuthPage({super.key, this.bloc, this.onSuccessRoute = '/budget/'});
 
   /// Parâmetro opcional para injeção nos testes.
   /// Quando nulo, usa `Modular.get<AuthBloc>()`.
   final Bloc<AuthEvent, AuthState>? bloc;
+
+  /// Rota para navegar após login bem-sucedido.
+  final String onSuccessRoute;
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -109,7 +112,7 @@ class _AuthPageState extends State<AuthPage> {
             );
           }
           if (state is AuthSuccessState) {
-            Modular.to.navigate('/budget/');
+            Modular.to.navigate(widget.onSuccessRoute);
           }
         },
         builder: (context, state) => Form(

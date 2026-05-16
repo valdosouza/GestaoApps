@@ -31,7 +31,7 @@ class LocalStorageService implements LocalStorage {
   @override
   Future delete({required String key}) async {
     await initializeIfNeeded();
-    _storage?.remove(key);
+    await _storage?.remove(key);
   }
 
   @override

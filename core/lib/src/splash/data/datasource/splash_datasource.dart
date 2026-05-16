@@ -10,17 +10,12 @@ abstract class SplashDataSource extends Gateway {
 class SplashDataSourceImpl extends SplashDataSource {
   SplashDataSourceImpl({required super.httpClient});
   @override
-  Future<bool> getAuthorization() async {
-    return await request(
-      'auth/authorization',
-      (payload) {
-        final data = json.decode(payload);
-
-        return (data['message'] == 'Valid Token');
-      },
-      onError: (error) {
-        return false;
-      },
-    );
-  }
+  Future<bool> getAuthorization() => request(
+        'auth/authorization',
+        (payload) {
+          final data = json.decode(payload);
+          return (data['message'] == 'Valid Token');
+        },
+        onError: (error) => false,
+      );
 }

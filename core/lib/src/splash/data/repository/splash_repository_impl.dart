@@ -5,9 +5,9 @@ import 'package:core/src/splash/domain/repository/splash_respository.dart';
 import 'package:dartz/dartz.dart';
 
 class SplashRepositoryImpl implements SplashRepository {
-  final SplashDataSource datasource;
-
   SplashRepositoryImpl({required this.datasource});
+
+  final SplashDataSource datasource;
 
   @override
   Future<Either<Failure, bool>> getAuthorization() async {
@@ -15,7 +15,7 @@ class SplashRepositoryImpl implements SplashRepository {
       final auth = await datasource.getAuthorization();
       return Right(auth);
     } on ServerException {
-      return Left(ServerFailure());
+      return const Left(ServerFailure());
     }
   }
 }

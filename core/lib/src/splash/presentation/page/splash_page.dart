@@ -7,11 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class SplashPage extends StatefulWidget {
+  const SplashPage({super.key, this.bloc});
+
   /// Parâmetro opcional para injeção nos testes.
   /// Quando nulo, usa `Modular.get<SplashBloc>()`.
   final Bloc<SplashEvent, SplashState>? bloc;
-
-  const SplashPage({super.key, this.bloc});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -28,23 +28,19 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: BlocConsumer<Bloc<SplashEvent, SplashState>, SplashState>(
-        bloc: _bloc,
-        listener: (context, state) {
-          if (state is ServerNotConfiguredState) {
-            Modular.to.navigate('/server-config/');
-          } else if (state is AuthorizedState) {
-            Modular.to.navigate('/budget/');
-          } else if (state is NotAuthorizedState) {
-            Modular.to.navigate('/auth/');
-          }
-        },
-        builder: (context, state) {
-          return const CustomCircularProgressIndicator();
-        },
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Material(
+        child: BlocConsumer<Bloc<SplashEvent, SplashState>, SplashState>(
+          bloc: _bloc,
+          listener: (context, state) {
+            if (state is ServerNotConfiguredState) {
+              Modular.to.navigate('/server-config/');
+            } else if (state is AuthorizedState) {
+              Modular.to.navigate('/budget/');
+            } else if (state is NotAuthorizedState) {
+              Modular.to.navigate('/auth/');
+            }
+          },
+          builder: (context, state) => const CustomCircularProgressIndicator(),
+        ),
+      );
 }

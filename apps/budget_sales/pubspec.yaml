@@ -70,6 +70,18 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # Assets
-  # assets:
-  #   - assets/
+  fonts:
+    - family: OpenSans
+      fonts:
+        - asset: fonts/ttf/OpenSans-Regular.ttf
+        - asset: fonts/ttf/OpenSans-Bold.ttf
+          weight: 700
+        - asset: fonts/ttf/OpenSans-Italic.ttf
+          style: italic
+        - asset: fonts/ttf/OpenSans-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: fonts/ttf/OpenSans-Light.ttf
+          weight: 300
+        - asset: fonts/ttf/OpenSans-SemiBold.ttf
+          weight: 600

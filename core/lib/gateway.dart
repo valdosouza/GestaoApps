@@ -34,6 +34,12 @@ class Gateway {
   Future<dynamic> getUserId() async =>
       LocalStorageService.instance.get(key: LocalStorageKey.tbUserId, defaultValue: 0);
 
+  Future<int> getUserLevel() async {
+    final value = await LocalStorageService.instance
+        .get(key: LocalStorageKey.userLevel, defaultValue: '');
+    return int.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
   Future<int> getSalesmanId() async {
     final value = await LocalStorageService.instance
         .get(key: LocalStorageKey.salesmanId, defaultValue: 0);

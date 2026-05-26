@@ -55,6 +55,22 @@ export 'src/auth/presentation/page/server_ip_page.dart';
 // Module
 export 'src/auth/auth_module.dart';
 
+// ===== PERMISSION MODULE =====
+// Domain
+export 'src/permission/domain/entity/permission_entity.dart';
+export 'src/permission/domain/repository/permission_repository.dart';
+export 'src/permission/domain/usecase/check_permission.dart';
+
+// Data
+export 'src/permission/data/model/permission_model.dart';
+export 'src/permission/data/datasource/remote/permission_remote_datasource.dart';
+export 'src/permission/data/repository/permission_repository_impl.dart';
+
+// Presentation
+export 'src/permission/presentation/cubit/permission_cubit.dart';
+export 'src/permission/presentation/cubit/permission_state.dart';
+export 'src/permission/presentation/page/unauthorized_page.dart';
+
 // ===== THEME MODULE =====
 export 'src/core/theme/app_theme.dart';
 export 'src/core/theme/app_colors.dart';

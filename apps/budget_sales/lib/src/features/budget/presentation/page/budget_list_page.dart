@@ -3,10 +3,13 @@ import 'package:budget_sales/src/features/budget/presentation/bloc/budget_list_b
 import 'package:budget_sales/src/features/budget/presentation/bloc/budget_list_event.dart';
 import 'package:budget_sales/src/features/budget/presentation/bloc/budget_list_state.dart';
 import 'package:budget_sales/src/features/budget/presentation/page/budget_register_page.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:intl/intl.dart';
+
+const _kPermissionMenu = 'Fr_Cotacao';
 
 class BudgetListPage extends StatefulWidget {
   const BudgetListPage({super.key, this.bloc});
@@ -20,6 +23,7 @@ class BudgetListPage extends StatefulWidget {
 
 class _BudgetListPageState extends State<BudgetListPage> {
   late BudgetListBloc _bloc;
+  late PermissionCubit _permissionCubit;
 
   // Filter controllers
   final _numberCtrl = TextEditingController();
@@ -34,7 +38,12 @@ class _BudgetListPageState extends State<BudgetListPage> {
   void initState() {
     super.initState();
     _bloc = widget.bloc ?? Modular.get<BudgetListBloc>();
-    _bloc.add(const BudgetListLoad());
+    _permissionCubit = Modular.get<PermissionCubit>();
+    _permissionCubit.check(
+      menu: _kPermissionMenu,
+      kind: 'Visualizar',
+      situation: 'S',
+    );
   }
 
   @override
@@ -47,17 +56,22 @@ class _BudgetListPageState extends State<BudgetListPage> {
   }
 
   void _applyFilters() {
-    _bloc.add(BudgetListLoad(
-      number: _numberCtrl.text.trim().isEmpty ? null : _numberCtrl.text.trim(),
-      dateStart: _dateStartCtrl.text.trim().isEmpty
-          ? null
-          : _dateStartCtrl.text.trim(),
-      dateEnd:
-          _dateEndCtrl.text.trim().isEmpty ? null : _dateEndCtrl.text.trim(),
-      customerName: _customerCtrl.text.trim().isEmpty
-          ? null
-          : _customerCtrl.text.trim(),
-    ));
+    _bloc.add(
+      BudgetListLoad(
+        number: _numberCtrl.text.trim().isEmpty
+            ? null
+            : _numberCtrl.text.trim(),
+        dateStart: _dateStartCtrl.text.trim().isEmpty
+            ? null
+            : _dateStartCtrl.text.trim(),
+        dateEnd: _dateEndCtrl.text.trim().isEmpty
+            ? null
+            : _dateEndCtrl.text.trim(),
+        customerName: _customerCtrl.text.trim().isEmpty
+            ? null
+            : _customerCtrl.text.trim(),
+      ),
+    );
   }
 
   void _clearFilters() {
@@ -83,9 +97,11 @@ class _BudgetListPageState extends State<BudgetListPage> {
 
   void _openRegister({BudgetEntity? budget}) {
     Navigator.of(context)
-        .push(MaterialPageRoute(
-          builder: (_) => BudgetRegisterPage(remoteBudgetId: budget?.id),
-        ))
+        .push(
+          MaterialPageRoute(
+            builder: (_) => BudgetRegisterPage(remoteBudgetId: budget?.id),
+          ),
+        )
         .then((result) {
           if (result == true || result == null) {
             _bloc.add(const BudgetListLoad());
@@ -95,9 +111,11 @@ class _BudgetListPageState extends State<BudgetListPage> {
 
   void _openLocalDraft(int localId) {
     Navigator.of(context)
-        .push(MaterialPageRoute(
-          builder: (_) => BudgetRegisterPage(localBudgetId: localId),
-        ))
+        .push(
+          MaterialPageRoute(
+            builder: (_) => BudgetRegisterPage(localBudgetId: localId),
+          ),
+        )
         .then((result) {
           if (result == true || result == null) {
             _bloc.add(const BudgetListLoad());
@@ -107,6 +125,77 @@ class _BudgetListPageState extends State<BudgetListPage> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocListener<PermissionCubit, PermissionState>(
+      bloc: _permissionCubit,
+      listenWhen: (prev, curr) =>
+          curr.status == PermissionStatus.granted &&
+          prev.status != PermissionStatus.granted,
+      listener: (context, _) {
+        _bloc.add(const BudgetListLoad());
+      },
+      child: BlocBuilder<PermissionCubit, PermissionState>(
+        bloc: _permissionCubit,
+        builder: (context, permState) {
+          if (permState.status == PermissionStatus.initial ||
+              permState.status == PermissionStatus.loading) {
+            return const Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text('Verificando permissões...'),
+                  ],
+                ),
+              ),
+            );
+          }
+          if (permState.status == PermissionStatus.denied) {
+            return const UnauthorizedPage();
+          }
+          if (permState.status == PermissionStatus.error) {
+            return Scaffold(
+              body: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.red.shade400,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Erro ao verificar permissão:\n${permState.errorMessage}',
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton.icon(
+                        onPressed: () => _permissionCubit.check(
+                          menu: _kPermissionMenu,
+                          kind: 'Visualizar',
+                          situation: 'S',
+                        ),
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Tentar Novamente'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+          // PermissionStatus.granted → conteúdo principal
+          return _buildMainContent();
+        },
+      ),
+    );
+  }
+
+  Widget _buildMainContent() {
     return BlocProvider.value(
       value: _bloc,
       child: Scaffold(
@@ -115,7 +204,8 @@ class _BudgetListPageState extends State<BudgetListPage> {
           actions: [
             IconButton(
               icon: Icon(
-                  _showFilters ? Icons.filter_list_off : Icons.filter_list),
+                _showFilters ? Icons.filter_list_off : Icons.filter_list,
+              ),
               tooltip: 'Filtros',
               onPressed: () => setState(() => _showFilters = !_showFilters),
             ),
@@ -148,73 +238,80 @@ class _BudgetListPageState extends State<BudgetListPage> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            Row(children: [
-              Expanded(
-                child: TextField(
-                  controller: _numberCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Número',
-                    isDense: true,
-                    border: OutlineInputBorder(),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _numberCtrl,
+                    decoration: const InputDecoration(
+                      labelText: 'Número',
+                      isDense: true,
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  controller: _customerCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Cliente',
-                    isDense: true,
-                    border: OutlineInputBorder(),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextField(
+                    controller: _customerCtrl,
+                    decoration: const InputDecoration(
+                      labelText: 'Cliente',
+                      isDense: true,
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
-              ),
-            ]),
+              ],
+            ),
             const SizedBox(height: 8),
-            Row(children: [
-              Expanded(
-                child: TextField(
-                  controller: _dateStartCtrl,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Data inicial',
-                    isDense: true,
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.calendar_today, size: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _dateStartCtrl,
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Data inicial',
+                      isDense: true,
+                      border: OutlineInputBorder(),
+                      suffixIcon: Icon(Icons.calendar_today, size: 16),
+                    ),
+                    onTap: () => _pickDate(_dateStartCtrl),
                   ),
-                  onTap: () => _pickDate(_dateStartCtrl),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  controller: _dateEndCtrl,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Data final',
-                    isDense: true,
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.calendar_today, size: 16),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextField(
+                    controller: _dateEndCtrl,
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Data final',
+                      isDense: true,
+                      border: OutlineInputBorder(),
+                      suffixIcon: Icon(Icons.calendar_today, size: 16),
+                    ),
+                    onTap: () => _pickDate(_dateEndCtrl),
                   ),
-                  onTap: () => _pickDate(_dateEndCtrl),
                 ),
-              ),
-            ]),
+              ],
+            ),
             const SizedBox(height: 8),
-            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              TextButton.icon(
-                onPressed: _clearFilters,
-                icon: const Icon(Icons.clear),
-                label: const Text('Limpar'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton.icon(
-                onPressed: _applyFilters,
-                icon: const Icon(Icons.search),
-                label: const Text('Buscar'),
-              ),
-            ]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton.icon(
+                  onPressed: _clearFilters,
+                  icon: const Icon(Icons.clear),
+                  label: const Text('Limpar'),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton.icon(
+                  onPressed: _applyFilters,
+                  icon: const Icon(Icons.search),
+                  label: const Text('Buscar'),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -237,8 +334,9 @@ class _BudgetListPageState extends State<BudgetListPage> {
                 Text(state.message, textAlign: TextAlign.center),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                    onPressed: _applyFilters,
-                    child: const Text('Tentar novamente')),
+                  onPressed: _applyFilters,
+                  child: const Text('Tentar novamente'),
+                ),
               ],
             ),
           );
@@ -248,9 +346,7 @@ class _BudgetListPageState extends State<BudgetListPage> {
           final remote = state.budgets;
 
           if (pending.isEmpty && remote.isEmpty) {
-            return const Center(
-              child: Text('Nenhum orçamento encontrado.'),
-            );
+            return const Center(child: Text('Nenhum orçamento encontrado.'));
           }
 
           return ListView(
@@ -262,12 +358,14 @@ class _BudgetListPageState extends State<BudgetListPage> {
                   label: 'Rascunhos pendentes (${pending.length})',
                   color: Colors.orange.shade700,
                 ),
-                ...pending.map((b) => _BudgetTile(
-                      budget: b,
-                      currencyFmt: _currencyFmt,
-                      isPending: true,
-                      onTap: () => _openLocalDraft(b.id),
-                    )),
+                ...pending.map(
+                  (b) => _BudgetTile(
+                    budget: b,
+                    currencyFmt: _currencyFmt,
+                    isPending: true,
+                    onTap: () => _openLocalDraft(b.id),
+                  ),
+                ),
                 const Divider(height: 16, thickness: 1),
               ],
               if (remote.isNotEmpty) ...[
@@ -277,11 +375,13 @@ class _BudgetListPageState extends State<BudgetListPage> {
                     label: 'Orçamentos',
                     color: Colors.grey.shade600,
                   ),
-                ...remote.map((b) => _BudgetTile(
-                      budget: b,
-                      currencyFmt: _currencyFmt,
-                      onTap: () => _openRegister(budget: b),
-                    )),
+                ...remote.map(
+                  (b) => _BudgetTile(
+                    budget: b,
+                    currencyFmt: _currencyFmt,
+                    onTap: () => _openRegister(budget: b),
+                  ),
+                ),
               ],
             ],
           );
@@ -313,10 +413,10 @@ class _SectionHeader extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             label,
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium
-                ?.copyWith(color: color, fontWeight: FontWeight.w600),
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
@@ -369,9 +469,10 @@ class _BudgetTile extends StatelessWidget {
               child: const Text(
                 'PENDENTE',
                 style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold),
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
         ],
@@ -392,10 +493,7 @@ class _BudgetTile extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text(
-            budget.date,
-            style: theme.textTheme.bodySmall,
-          ),
+          Text(budget.date, style: theme.textTheme.bodySmall),
         ],
       ),
     );

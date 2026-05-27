@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:core/database/app_database.dart';
 import 'package:budget_sales/src/features/budget/data/datasource/local/budget_local_datasource.dart';
 import 'package:modular_bloc_bind/modular_bloc_bind.dart';
@@ -63,6 +64,18 @@ class BudgetModule extends Module {
         Bind.factory((i) => UpdateLocalItem(i<BudgetRepository>())),
         Bind.factory((i) => GetLocalItems(i<BudgetRepository>())),
         Bind.factory((i) => DeleteLocalItem(i<BudgetRepository>())),
+
+        // ── Permission ───────────────────────────────────────────────────
+        Bind.factory<PermissionRemoteDatasource>(
+          (i) => PermissionRemoteDatasource(httpClient: i<http.Client>()),
+        ),
+        Bind.singleton<PermissionRepository>(
+          (i) => PermissionRepositoryImpl(remote: i<PermissionRemoteDatasource>()),
+        ),
+        Bind.factory((i) => CheckPermission(i<PermissionRepository>())),
+        BlocBind.singleton<PermissionCubit>(
+          (i) => PermissionCubit(checkPermission: i<CheckPermission>()),
+        ),
 
         // ── BLoCs ────────────────────────────────────────────────────────
         BlocBind.singleton<BudgetListBloc>(

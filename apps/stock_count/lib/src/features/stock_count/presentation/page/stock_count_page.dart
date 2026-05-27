@@ -36,7 +36,7 @@ class _StockCountPageState extends State<StockCountPage> {
     _permissionCubit = Modular.get<PermissionCubit>();
     _permissionCubit.check(
       menu: _kPermissionMenu,
-      kind: 'Incluir',
+      kind: 'Visualizar',
       situation: 'S',
     );
   }
@@ -152,7 +152,7 @@ class _StockCountPageState extends State<StockCountPage> {
                       ElevatedButton.icon(
                         onPressed: () => _permissionCubit.check(
                           menu: _kPermissionMenu,
-                          kind: 'Incluir',
+                          kind: 'Visualizar',
                           situation: 'S',
                         ),
                         icon: const Icon(Icons.refresh),

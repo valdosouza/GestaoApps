@@ -5,6 +5,7 @@ import 'package:core/src/core/shared/widgets/degrade_area.dart';
 import 'package:core/src/core/shared/widgets/logo_area.dart';
 import 'package:core/src/auth/presentation/bloc/auth_bloc.dart';
 import 'package:core/src/auth/presentation/bloc/auth_event.dart';
+import 'package:core/src/permission/presentation/page/unauthorized_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show TextInputFormatter;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -113,6 +114,16 @@ class _AuthPageState extends State<AuthPage> {
           }
           if (state is AuthSuccessState) {
             Modular.to.navigate(widget.onSuccessRoute);
+          }
+          if (state is AuthNoSalesmanState) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const UnauthorizedPage(
+                  message:
+                      'Usuário sem permissão de acesso, pois não tem vendedor vinculado',
+                ),
+              ),
+            );
           }
         },
         builder: (context, state) => Form(

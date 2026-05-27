@@ -39,6 +39,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (failure) => emit(AuthErrorState(error: failure.toString())),
       (user) {
         if (user.authenticated) {
+          if (user.salesmanId <= 0) {
+            emit(const AuthNoSalesmanState());
+            return;
+          }
           LocalStorageService.instance
               .saveItem(key: LocalStorageKey.tbUserId, value: user.id);
           LocalStorageService.instance

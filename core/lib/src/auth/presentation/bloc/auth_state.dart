@@ -35,3 +35,8 @@ class AuthErrorState extends AuthState {
 class AuthSessionExpiredState extends AuthState {
   const AuthSessionExpiredState();
 }
+
+/// Login bem-sucedido, mas o usuário não tem vendedor vinculado (salesmanId <= 0).
+class AuthNoSalesmanState extends AuthState {
+  const AuthNoSalesmanState();
+}

@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class UnauthorizedPage extends StatelessWidget {
-  const UnauthorizedPage({super.key});
+  const UnauthorizedPage({
+    super.key,
+    this.message =
+        'Usuário sem permissão de acesso, solicite acesso ao Administrador do sistema',
+  });
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +34,10 @@ class UnauthorizedPage extends StatelessWidget {
             children: [
               Icon(Icons.lock_outline, size: 80, color: Colors.red.shade400),
               const SizedBox(height: 24),
-              const Text(
-                'Usuário sem permissão de acesso, solicite acesso ao Administrador do sistema',
+              Text(
+                message,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontFamily: 'OpenSans',
                   fontWeight: FontWeight.w500,

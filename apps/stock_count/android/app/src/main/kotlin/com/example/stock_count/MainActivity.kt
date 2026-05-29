@@ -1,4 +1,4 @@
-package com.example.stock_count
+package com.setes.stockcountapp
 
 import io.flutter.embedding.android.FlutterActivity
 

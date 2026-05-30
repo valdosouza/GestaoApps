@@ -11,8 +11,7 @@ class UnauthorizedPage extends StatelessWidget {
   final String message;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: const Text(
           'Acesso Negado',
@@ -48,5 +47,4 @@ class UnauthorizedPage extends StatelessWidget {
         ),
       ),
     );
-  }
 }

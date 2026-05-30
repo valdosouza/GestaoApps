@@ -13,6 +13,7 @@ import 'package:core/src/auth/domain/entity/auth_entity.dart';
 class AuthModel extends AuthEntity {
   const AuthModel({
     super.authenticated = false,
+    super.token = '',
     super.id = 0,
     super.name = '',
     super.login = '',
@@ -30,7 +31,9 @@ class AuthModel extends AuthEntity {
     if (!authenticated) {
       return AuthModel(
         authenticated: false,
-        error: json['message']?.toString() ?? 'Credenciais inválidas.',
+        error: json['error']?.toString() ??
+            json['message']?.toString() ??
+            'Credenciais inválidas.',
       );
     }
 
@@ -38,6 +41,7 @@ class AuthModel extends AuthEntity {
 
     return AuthModel(
       authenticated: true,
+      token: json['token']?.toString() ?? '',
       id: _toInt(user['id']),
       name: user['name']?.toString() ?? '',
       login: user['login']?.toString() ?? '',
@@ -59,6 +63,7 @@ class AuthModel extends AuthEntity {
 
   Map<String, dynamic> toJson() => {
         'authenticated': authenticated,
+        'token': token,
         'user': {
           'id': id,
           'name': name,

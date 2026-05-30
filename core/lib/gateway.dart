@@ -49,11 +49,15 @@ class Gateway {
     return value is int ? value : int.tryParse(value.toString()) ?? 0;
   }
 
-  Future<Map<String, String>> requestOptions() async => {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-        'Access-Control-Allow-Origin': '*',
-        'Accept': '*/*',
-      };
+  Future<Map<String, String>> requestOptions() async {
+    final token = await getToken();
+    return {
+      HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+      'Access-Control-Allow-Origin': '*',
+      'Accept': '*/*',
+      if (token.isNotEmpty) HttpHeaders.authorizationHeader: 'Bearer $token',
+    };
+  }
 
   Future<T> request<T>(
     String url,

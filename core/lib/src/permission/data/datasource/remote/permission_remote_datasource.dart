@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'package:core/gateway.dart';
-import 'package:http/http.dart' as http;
 import '../../model/permission_model.dart';
 
 class PermissionRemoteDatasource extends Gateway {
-  PermissionRemoteDatasource({required http.Client httpClient})
-      : super(httpClient: httpClient);
+  PermissionRemoteDatasource({required super.httpClient});
 
   Future<PermissionModel> checkPermission({
     required String menu,

@@ -44,6 +44,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             return;
           }
           LocalStorageService.instance
+              .saveItem(key: LocalStorageKey.token, value: user.token);
+          LocalStorageService.instance
               .saveItem(key: LocalStorageKey.tbUserId, value: user.id);
           LocalStorageService.instance
               .saveItem(key: LocalStorageKey.salesmanId, value: user.salesmanId);
@@ -105,6 +107,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   // ──────────────────────────────────────────
 
   Future<void> _clearSession() async {
+    await LocalStorageService.instance
+        .saveItem(key: LocalStorageKey.token, value: '');
     await LocalStorageService.instance
         .saveItem(key: LocalStorageKey.tbUserId, value: 0);
     await LocalStorageService.instance

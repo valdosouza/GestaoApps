@@ -4,6 +4,7 @@
 /// ```json
 /// {
 ///   "authenticated": true,
+///   "token": "eyJhbGci...",
 ///   "user": { "id": 5, "name": "Joao Silva", "login": "joao",
 ///             "level": "V", "active": "S", "salesmanId": 10 }
 /// }
@@ -11,6 +12,7 @@
 class AuthEntity {
   const AuthEntity({
     required this.authenticated,
+    required this.token,
     required this.id,
     required this.name,
     required this.login,
@@ -22,6 +24,7 @@ class AuthEntity {
 
   const AuthEntity.empty()
       : authenticated = false,
+        token = '',
         id = 0,
         name = '',
         login = '',
@@ -31,6 +34,7 @@ class AuthEntity {
         error = '';
 
   final bool authenticated;
+  final String token;
   final int id;
   final String name;
   final String login;

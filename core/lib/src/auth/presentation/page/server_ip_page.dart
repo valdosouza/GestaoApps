@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:core/src/core/shared/constants.dart';
 import 'package:core/src/core/shared/helpers/local_storage.dart';
 import 'package:core/src/core/shared/local_storage_key.dart';
@@ -12,7 +14,7 @@ import 'package:http/http.dart' as http;
 /// ou quando o usuário acessa "Configurar servidor" na tela de login.
 ///
 /// Salva o IP via SharedPreferences usando [LocalStorageKey.serverIp]
-/// e redireciona para a tela de login após validação bem-sucedida.
+/// e redireciona para a tela de login após o usuário selecionar o estabelecimento.
 class ServerIpPage extends StatefulWidget {
   const ServerIpPage({super.key});
 
@@ -20,15 +22,23 @@ class ServerIpPage extends StatefulWidget {
   State<ServerIpPage> createState() => _ServerIpPageState();
 }
 
+class _Institution {
+  const _Institution({required this.id, required this.fantasyName});
+  final int id;
+  final String fantasyName;
+}
+
 class _ServerIpPageState extends State<ServerIpPage> {
   final _form = GlobalKey<FormState>();
   final _ipController = TextEditingController();
-  final _institutionController = TextEditingController();
   bool _testing = false;
   String? _testResult;
   bool _testSuccess = false;
 
-  // Regex para IPv4 simples: 0-255.0-255.0-255.0-255
+  List<_Institution> _institutions = [];
+  bool _loadingInstitutions = false;
+  _Institution? _selectedInstitution;
+
   static final _ipRegex = RegExp(
     r'^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$',
   );
@@ -45,18 +55,11 @@ class _ServerIpPageState extends State<ServerIpPage> {
     if (savedIp != null && savedIp.toString().isNotEmpty) {
       _ipController.text = savedIp.toString();
     }
-
-    final savedInstitution = await LocalStorageService.instance
-        .get(key: 'institution', defaultValue: '');
-    if (savedInstitution != null && savedInstitution.toString().isNotEmpty) {
-      _institutionController.text = savedInstitution.toString();
-    }
   }
 
   @override
   void dispose() {
     _ipController.dispose();
-    _institutionController.dispose();
     super.dispose();
   }
 
@@ -70,39 +73,36 @@ class _ServerIpPageState extends State<ServerIpPage> {
     return null;
   }
 
-  String? _validateInstitution(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Informe o estabelecimento';
-    }
-    return null;
-  }
-
   Future<void> _testConnection() async {
-    if (!(_form.currentState?.validate() ?? false)) {
-      return;
-    }
+    if (!(_form.currentState?.validate() ?? false)) return;
 
     final ip = _ipController.text.trim();
-    final testUrl = buildBaseApiUrl(ip);
+    final healthUrl = 'http://$ip:$apiPort${apiPath}health';
 
     setState(() {
       _testing = true;
       _testResult = null;
       _testSuccess = false;
+      _institutions = [];
+      _selectedInstitution = null;
     });
 
     try {
       final response = await http
-          .get(Uri.parse(testUrl))
+          .get(Uri.parse(healthUrl))
           .timeout(const Duration(seconds: 5));
 
-      // Qualquer resposta do servidor (mesmo 404) confirma conectividade.
+      final success = response.statusCode == 200;
       setState(() {
-        _testSuccess = response.statusCode < 500;
-        _testResult = _testSuccess
-            ? 'Servidor acessível (HTTP ${response.statusCode})'
+        _testSuccess = success;
+        _testResult = success
+            ? 'Servidor funcionando corretamente'
             : 'Servidor retornou erro ${response.statusCode}';
       });
+
+      if (success) {
+        await _loadInstitutions(ip);
+      }
     } catch (e) {
       setState(() {
         _testSuccess = false;
@@ -113,27 +113,54 @@ class _ServerIpPageState extends State<ServerIpPage> {
     }
   }
 
-  Future<void> _save() async {
-    if (!(_form.currentState?.validate() ?? false)) {
-      return;
+  Future<void> _loadInstitutions(String ip) async {
+    setState(() => _loadingInstitutions = true);
+    try {
+      final url = 'http://$ip:$apiPort${apiPath}institutions';
+      final response = await http
+          .get(Uri.parse(url))
+          .timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
+        setState(() {
+          _institutions = data
+              .map((e) => _Institution(
+                    id: e['id'] as int,
+                    fantasyName: e['fantasyName'] as String,
+                  ))
+              .toList();
+        });
+      } else {
+        setState(() {
+          _testResult = 'Erro ao carregar estabelecimentos: ${response.statusCode}';
+          _testSuccess = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _testResult = 'Erro ao carregar estabelecimentos. Tente novamente.';
+        _testSuccess = false;
+      });
+    } finally {
+      setState(() => _loadingInstitutions = false);
     }
+  }
+
+  Future<void> _proceed() async {
+    if (_selectedInstitution == null) return;
 
     final ip = _ipController.text.trim();
-    final institution = _institutionController.text.trim();
     await LocalStorageService.instance
         .saveItem(key: LocalStorageKey.serverIp, value: ip);
-    await LocalStorageService.instance
-        .saveItem(key: 'institution', value: institution);
+    await LocalStorageService.instance.saveItem(
+        key: LocalStorageKey.institution,
+        value: _selectedInstitution!.fantasyName);
+    await LocalStorageService.instance.saveItem(
+        key: LocalStorageKey.tbInstitutionId,
+        value: _selectedInstitution!.id.toString());
 
-    if (!mounted) {
-      return;
-    }
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Servidor e estabelecimento configurados com sucesso!'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    if (!mounted) return;
     Modular.to.navigate('/auth/');
   }
 
@@ -172,16 +199,28 @@ class _ServerIpPageState extends State<ServerIpPage> {
                         ),
                         const SizedBox(height: 24),
                         _buildIpField(),
-                        const SizedBox(height: 16),
-                        _buildInstitutionField(),
                         const SizedBox(height: 12),
                         _buildTestButton(),
                         if (_testResult != null) ...[
                           const SizedBox(height: 8),
                           _buildTestResult(),
                         ],
-                        const SizedBox(height: 20),
-                        _buildSaveButton(),
+                        if (_loadingInstitutions) ...[
+                          const SizedBox(height: 16),
+                          const CircularProgressIndicator(color: Colors.white),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Carregando estabelecimentos...',
+                            style: TextStyle(
+                                color: Colors.white70, fontFamily: 'OpenSans'),
+                          ),
+                        ],
+                        if (_institutions.isNotEmpty) ...[
+                          const SizedBox(height: 20),
+                          _buildInstitutionsList(),
+                          const SizedBox(height: 16),
+                          _buildProceedButton(),
+                        ],
                         const SizedBox(height: 12),
                         if (Navigator.canPop(context))
                           TextButton(
@@ -237,33 +276,6 @@ class _ServerIpPageState extends State<ServerIpPage> {
         ],
       );
 
-  Widget _buildInstitutionField() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Estabelecimento', style: kLabelStyle),
-          const SizedBox(height: 10),
-          Container(
-            decoration: kBoxDecorationStyle,
-            child: TextFormField(
-              controller: _institutionController,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.done,
-              validator: _validateInstitution,
-              style:
-                  const TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(top: 14),
-                prefixIcon:
-                    Icon(Icons.business_outlined, color: Colors.white),
-                hintText: 'Ex: Código da Minha Empresa',
-                hintStyle: kHintTextStyle,
-              ),
-            ),
-          ),
-        ],
-      );
-
   Widget _buildTestButton() => SizedBox(
         width: double.infinity,
         child: OutlinedButton.icon(
@@ -308,19 +320,80 @@ class _ServerIpPageState extends State<ServerIpPage> {
         ],
       );
 
-  Widget _buildSaveButton() => SizedBox(
+  Widget _buildInstitutionsList() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Selecione o Estabelecimento', style: kLabelStyle),
+          const SizedBox(height: 10),
+          Container(
+            decoration: kBoxDecorationStyle,
+            child: Column(
+              children: _institutions.map((institution) {
+                final selected = _selectedInstitution?.id == institution.id;
+                return InkWell(
+                  onTap: () =>
+                      setState(() => _selectedInstitution = institution),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? Colors.white.withAlpha(30)
+                          : Colors.transparent,
+                      border: _institutions.last.id != institution.id
+                          ? Border(
+                              bottom: BorderSide(
+                                  color: Colors.white.withAlpha(30)))
+                          : null,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          selected
+                              ? Icons.radio_button_checked
+                              : Icons.radio_button_unchecked,
+                          color: selected ? Colors.white : Colors.white54,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            institution.fantasyName,
+                            style: TextStyle(
+                              color:
+                                  selected ? Colors.white : Colors.white70,
+                              fontFamily: 'OpenSans',
+                              fontWeight: selected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      );
+
+  Widget _buildProceedButton() => SizedBox(
         width: double.infinity,
-        child: ElevatedButton(
+        child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(100, 60),
-            backgroundColor: Colors.black,
+            backgroundColor:
+                _selectedInstitution != null ? Colors.black : Colors.black38,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(18),
             ),
           ),
-          onPressed: _save,
-          child: const Text(
-            'SALVAR',
+          onPressed: _selectedInstitution != null ? _proceed : null,
+          icon: const Icon(Icons.login, color: Colors.white),
+          label: const Text(
+            'ACESSAR SISTEMA',
             style: TextStyle(
               color: Colors.white,
               letterSpacing: 1.5,

@@ -53,6 +53,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               .saveItem(key: LocalStorageKey.userName, value: user.name);
           LocalStorageService.instance
               .saveItem(key: LocalStorageKey.userLevel, value: user.level);
+          LocalStorageService.instance.saveItem(
+            key: LocalStorageKey.keepConnected,
+            value: event.keepConnected,
+          );
           _startInactivityTimer();
           emit(const AuthSuccessState());
         } else {
@@ -117,6 +121,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         .saveItem(key: LocalStorageKey.userName, value: '');
     await LocalStorageService.instance
         .saveItem(key: LocalStorageKey.userLevel, value: '');
+    await LocalStorageService.instance
+        .saveItem(key: LocalStorageKey.keepConnected, value: false);
   }
 
   @override

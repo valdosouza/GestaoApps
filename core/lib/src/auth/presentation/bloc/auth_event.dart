@@ -6,13 +6,18 @@ abstract class AuthEvent extends Equatable {
 
 /// Disparado quando o usuário envia as credenciais de login.
 class AuthLoginEvent extends AuthEvent {
-  const AuthLoginEvent({required this.login, required this.password});
+  const AuthLoginEvent({
+    required this.login,
+    required this.password,
+    this.keepConnected = false,
+  });
 
   final String login;
   final String password;
+  final bool keepConnected;
 
   @override
-  List<Object?> get props => [login, password];
+  List<Object?> get props => [login, password, keepConnected];
 }
 
 /// Disparado para encerrar a sessão do usuário.

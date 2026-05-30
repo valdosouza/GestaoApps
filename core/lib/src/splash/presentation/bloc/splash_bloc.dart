@@ -13,16 +13,19 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       SplashInitEvent event, Emitter<SplashState> emit) async {
     emit(LoadingState());
 
-    // Executa a verificação e o tempo mínimo de splash em paralelo.
-    // O splash fica visível por pelo menos 2 s, sem bloquear caso a
-    // verificação demore mais que isso.
     final results = await Future.wait<Object?>([
       LocalStorageService.instance
           .get(key: LocalStorageKey.serverIp, defaultValue: ''),
+      LocalStorageService.instance
+          .get(key: LocalStorageKey.token, defaultValue: ''),
+      LocalStorageService.instance
+          .get(key: LocalStorageKey.keepConnected, defaultValue: false),
       Future.delayed(const Duration(seconds: 2), () => null),
     ]);
 
     final ip = results[0];
+    final token = results[1]?.toString() ?? '';
+    final keepConnected = results[2] == true;
 
     // 1. Verifica se o IP do servidor foi configurado.
     if (ip == null || ip.toString().isEmpty) {
@@ -30,9 +33,12 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       return;
     }
 
-    // 2. Não há sessão persistente neste sistema (sem JWT).
-    //    Sempre que o app for aberto, o vendedor precisa fazer login.
-    //    O timer de inatividade (10 min) é gerenciado pelo AuthBloc em memória.
+    // 2. Se "Manter conectado" está ativo e há token salvo, entra direto.
+    if (keepConnected && token.isNotEmpty) {
+      emit(AuthorizedState());
+      return;
+    }
+
     emit(NotAuthorizedState());
   }
 }

@@ -1,4 +1,5 @@
 import 'package:core/src/core/shared/helpers/local_storage.dart';
+import 'package:core/src/core/shared/local_storage_key.dart';
 import 'package:core/src/core/shared/theme.dart';
 import 'package:core/src/core/shared/validators/form_validators.dart';
 import 'package:core/src/core/shared/widgets/degrade_area.dart';
@@ -33,6 +34,7 @@ class _AuthPageState extends State<AuthPage> {
   final _passwordController = TextEditingController();
   bool _passwordVisible = false;
   bool _rememberCredentials = false;
+  bool _keepConnected = false;
 
   @override
   void initState() {
@@ -48,6 +50,9 @@ class _AuthPageState extends State<AuthPage> {
         .get(key: 'saved_password', defaultValue: '');
     final hasSaved = savedLogin != null && savedLogin.toString().isNotEmpty;
 
+    final keepConnected = await LocalStorageService.instance
+        .get(key: LocalStorageKey.keepConnected, defaultValue: false);
+
     if (hasSaved) {
       setState(() {
         _loginController.text = savedLogin.toString();
@@ -55,6 +60,10 @@ class _AuthPageState extends State<AuthPage> {
         _rememberCredentials = true;
       });
     }
+
+    setState(() {
+      _keepConnected = keepConnected == true;
+    });
   }
 
   Future<void> _saveCredentials(String login, String password) async {
@@ -146,6 +155,7 @@ class _AuthPageState extends State<AuthPage> {
                   const SizedBox(height: 10),
                   _buildPasswordField(),
                   _buildRememberCheckbox(),
+                  _buildKeepConnectedCheckbox(),
                   const SizedBox(height: 10),
                   _buildLoginButton(context),
                   const SizedBox(height: 16),
@@ -232,7 +242,6 @@ class _AuthPageState extends State<AuthPage> {
               setState(() {
                 _rememberCredentials = value ?? false;
               });
-              // Se desmarcado, limpa as credenciais salvas
               if (!_rememberCredentials) {
                 await _clearSavedCredentials();
               }
@@ -240,6 +249,25 @@ class _AuthPageState extends State<AuthPage> {
           ),
           const Text(
             'Lembrar credenciais',
+            style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
+          ),
+        ],
+      );
+
+  Widget _buildKeepConnectedCheckbox() => Row(
+        children: [
+          Checkbox(
+            value: _keepConnected,
+            checkColor: Colors.blue,
+            activeColor: Colors.white,
+            onChanged: (value) {
+              setState(() {
+                _keepConnected = value ?? false;
+              });
+            },
+          ),
+          const Text(
+            'Manter conectado',
             style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
           ),
         ],
@@ -263,6 +291,7 @@ class _AuthPageState extends State<AuthPage> {
               _bloc.add(AuthLoginEvent(
                 login: login,
                 password: password,
+                keepConnected: _keepConnected,
               ));
             }
           },

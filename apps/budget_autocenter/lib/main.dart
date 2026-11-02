@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'app.dart';
-import 'src/di/injection_container.dart';
+import 'src/app_module.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  try {
-    final deps = await AppDependencies.create();
-    runApp(MyApp(deps: deps));
-  } catch (e, stackTrace) {
-    // TODO: Implementar error handling
-    print('Erro ao inicializar app: $e');
-    print('Stack trace: $stackTrace');
-  }
+  runApp(ModularApp(module: AppModule(), child: const MyApp()));
 }

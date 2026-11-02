@@ -1,73 +1,28 @@
-# 🚗 AutoCenter - Orçamento
+# AutoCenter
 
-Aplicativo especializado para orçamentos de serviços automotivos e manutenção.
+Aplicativo Flutter de orçamentos automotivos. O fluxo aprovado é a entrada principal, no mesmo padrão do Sales: configuração do servidor → login do core → lista → detalhes → edição/veículo/checklist.
 
-## 🎯 Funcionalidades Planejadas
+## Rodar
 
-- [ ] Orçamento para serviços automotivos
-- [ ] Agendamento de serviços
-- [ ] Controle de peças e mão de obra
-- [ ] Integração com tabelas de preços
-- [ ] Histórico de serviços
-- [ ] Relatórios de manutenção
-- [ ] Sincronização com ERP
+Na pasta `D:\git\valdosouza\GestaoApps\apps\budget_autocenter`:
 
-## 📂 Estrutura
-
-```
-lib/
-├── main.dart                    # Ponto de entrada
-├── app.dart                     # Configuração do app
-└── src/
-    ├── features/
-    │   └── orcamento/          # Feature de orçamento
-    │       ├── domain/
-    │       ├── data/
-    │       └── presentation/
-    ├── config/
-    │   ├── routes/
-    │   └── theme/
-    └── di/
-        └── injection_container.dart
-```
-
-## 🚀 Getting Started
-
-### 1. Instalar dependências
-
-```bash
+```powershell
 flutter pub get
-```
-
-### 2. Rodar o app
-
-```bash
 flutter run
 ```
 
-## 🔄 Próximos Passos
+Não precisa de `--target`. Para escolher o navegador:
 
-1. **Fase 1**: Setup base ✅
-2. **Fase 2**: Features de listagem
-3. **Fase 3**: Features de criação/edição
-4. **Fase 4**: Integração com ERP
-5. **Fase 5**: Agendamento e sincronização
+```powershell
+flutter run -d chrome
+```
 
-## 🛠️ Dependências
+A API é o projeto `local-gestao-api` e deve estar rodando uma única vez. No navegador deste PC, configure o servidor como `127.0.0.1`. No celular via Wi-Fi, use o IP do computador na rede local. Se servidor/sessão já estiverem salvos, o app pode ir direto ao login ou à lista.
 
-Veja `pubspec.yaml` para a lista completa.
+## Estado atual
 
-**Principais**:
-- Flutter 3.41+
-- core (módulo compartilhado)
-- bloc 8.1.4
+Login, configuração e seleção de estabelecimento usam o core/API reais. Os orçamentos e o catálogo ainda são demonstrativos, em memória, com aviso na interface. Fechar ou recarregar perde os rascunhos desta sessão. A integração de orçamento, veículo e checklist com o ERP continua pendente.
 
-## 📝 Notas
+Web e Android possuem estrutura de execução. Android usa SDK 36, NDK 28.2.13676358 e JDK 21, alinhados à base usada no Sales. O identificador próprio é `com.setes.budget_autocenter`; assinatura de publicação ainda precisa ser configurada.
 
-- Herda funcionalidades do módulo `core`
-- Usa Clean Architecture
-- Padrão BLoC para estado
-
----
-
-**Para serviços automotivos profissionais**
+Veja [DESENVOLVIMENTO.md](DESENVOLVIMENTO.md) para estrutura, testes e limites.

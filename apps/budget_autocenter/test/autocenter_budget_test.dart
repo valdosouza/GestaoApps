@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:budget_autocenter/src/features/budget/domain/entity/autocenter_budget.dart';
 import 'package:budget_autocenter/src/features/budget/domain/entity/vehicle_region.dart';
 import 'package:budget_autocenter/src/features/budget/presentation/widget/vehicle_inspection.dart';
-import 'package:budget_autocenter/src/features/budget/presentation/page/autocenter_budget_page.dart';
+import 'support/budget_workbench.dart';
 
 void main() {
   test('preserva as 22 posições e os quatro estados do Delphi', () {
@@ -67,7 +67,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-          home: const AutoCenterBudgetPage(),
+          home: const TestWorkbench(),
         ),
       );
       await tester.pumpAndSettle();
@@ -117,7 +117,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-            home: const AutoCenterBudgetPage(),
+            home: const TestWorkbench(),
           ),
         );
         await tester.pumpAndSettle();

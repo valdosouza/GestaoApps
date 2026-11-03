@@ -6,7 +6,7 @@ Aplicativos Flutter integrados à `local-gestao-api`, que acessa o Firebird do E
 | --- | --- |
 | `apps/budget_sales` | Orçamentos de vendas, com rascunhos em SQLite/Drift |
 | `apps/stock_count` | Consulta de produtos e ajuste de estoque |
-| `apps/budget_autocenter` | AutoCenter em desenvolvimento, ainda sem plataforma configurada |
+| `apps/budget_autocenter` | Orçamentos automotivos Web/Android, com lista real e rascunhos locais em desenvolvimento |
 
 ## Requisitos
 

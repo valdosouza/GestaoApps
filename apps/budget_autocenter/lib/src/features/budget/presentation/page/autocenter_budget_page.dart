@@ -4,31 +4,28 @@ import '../widget/vehicle_inspection.dart';
 import '../../domain/entity/vehicle_region.dart';
 import '../../domain/entity/autocenter_budget.dart';
 import '../../data/datasource/local/demo_catalog.dart';
-import 'budget_overview_page.dart';
+import 'real_budget_list_page.dart';
 
 class AutoCenterBudgetPage extends StatelessWidget {
   const AutoCenterBudgetPage({super.key});
   @override
-  Widget build(BuildContext context) => BudgetOverviewPage(
-    onEdit: (context, budget, step) =>
-        Navigator.of(context).push<AutoCenterBudget>(
-          MaterialPageRoute(
-            builder: (_) =>
-                _BudgetEditor(budget: budget.copy(), initialStep: step),
-          ),
-        ),
-  );
+  Widget build(BuildContext context) => const RealBudgetListPage();
 }
 
-class _BudgetEditor extends StatefulWidget {
-  const _BudgetEditor({required this.budget, this.initialStep = 0});
+// Editor preservado para a próxima camada; não recebe registros reais nesta etapa.
+class AutoCenterBudgetEditorPage extends StatefulWidget {
+  const AutoCenterBudgetEditorPage({
+    super.key,
+    required this.budget,
+    this.initialStep = 0,
+  });
   final int initialStep;
   final AutoCenterBudget budget;
   @override
-  State<_BudgetEditor> createState() => _BudgetEditorState();
+  State<AutoCenterBudgetEditorPage> createState() => _BudgetEditorState();
 }
 
-class _BudgetEditorState extends State<_BudgetEditor> {
+class _BudgetEditorState extends State<AutoCenterBudgetEditorPage> {
   AutoCenterBudget get b => widget.budget;
   int step = 0, selected = 1;
   @override

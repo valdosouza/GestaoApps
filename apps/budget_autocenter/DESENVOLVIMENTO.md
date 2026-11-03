@@ -1,5 +1,17 @@
 # Desenvolvimento do AutoCenter
 
+## Camada atual — documento completo para homologação (2026-11-02)
+
+RealBudgetListPage abre BudgetDetailsPage. CompleteBudgetRepository lê/salva pelo módulo /autocenter da API; NewBudgetPage usa BudgetContentsEditor para peças, serviços, valores, veículo e checklist. O editor demonstrativo antigo continua isolado em testes, sem fallback para dados reais.
+
+PendingBudgetStore agora persiste o documento completo em JSON, incluindo a versão de origem, itens, veículo, checklist e chave de envio. Mantém namespace por servidor/estabelecimento/usuário e leitura dos pendentes antigos sem document. A marca _transport=autocenter-v1 identifica envios cobertos pela nova idempotência; um envio incerto antigo não pode ser repetido cegamente no endpoint novo.
+
+A API calcula totais, valida referências, respeita permissões com identidade JWT e grava em uma transação. Atualização conserva IDs dos itens e dados desconhecidos; vehicleDirty/checklistDirty evitam regravar seções não alteradas. Versão SHA-256 e CTC_EMUSO impedem sobrescrever mudanças do desktop; não há mesclagem automática. O custo de itens novos vem do cadastro; regras especiais de comissões/campanhas/associações e técnicos não estão homologadas.
+
+TB_APP_BUDGET_OP é uma tabela técnica aditiva para idempotência, criada pelo script setup-autocenter.js. Já foi aplicada à base local, sem alterar registros comerciais. As tabelas do Delphi não foram alteradas. Novos IDs usam os generators existentes; numeração comercial nova continua delegada ao fluxo legado. BLOBs de observação são codificados em WIN1252, compatível com a base/Delphi examinados.
+
+Validação automática: análise Flutter, testes de navegação/edição/persistência em 320/1000 pixels, contrato HTTP, transações/rollback, concorrência, permissões, arredondamento e 22 regiões × 4 estados. Leitura real do orçamento e dos nove cadastros validada; cores retornaram vazias. Build web e APK debug gerados. Escrita comercial real, regras específicas do cliente e uso físico são homologação manual, com roteiro em HOMOLOGACAO.md. Contrato da API em local-gestao-api/CONTRATO-AUTOCENTER.md.
+
 O fluxo aprovado foi promovido em 2026-11-02. Existe uma única entrada, `lib/main.dart`; não há entrada separada de protótipo nem tela de boas-vindas que pule a autenticação.
 
 ## Estrutura ativa
@@ -12,8 +24,14 @@ O fluxo aprovado foi promovido em 2026-11-02. Existe uma única entrada, `lib/ma
 - `domain/entity/autocenter_budget.dart`: orçamento, itens e inspeção em memória.
 - `domain/entity/vehicle_region.dart`: geometria/IDs das 22 regiões.
 - `data/datasource/local/demo_catalog.dart`: catálogo fictício isolado.
-- `presentation/page/autocenter_budget_page.dart`: composição e editor por etapas.
-- `presentation/page/budget_overview_page.dart`: lista, filtros e consulta de detalhes.
+- `domain/entity/budget_list_entry.dart`: leitura dos registros reais.
+- `data/repository/real_budget_list_repository.dart`: consulta/filtros na API.
+- `data/repository/budget_draft_repository.dart`: cadastros auxiliares e envio do cabeçalho.
+- `data/repository/pending_budget_store.dart`: persistência dos pendentes locais.
+- `presentation/page/real_budget_list_page.dart`: lista ativa, filtros, pendentes e Novo.
+- `presentation/page/new_budget_page.dart`: preenchimento, retomada e envio.
+- `presentation/page/autocenter_budget_page.dart`: entrada da lista ativa e editor demonstrativo preservado.
+- `presentation/page/budget_overview_page.dart`: consulta demonstrativa usada no fixture de testes.
 - `presentation/widget/vehicle_inspection.dart`: desenho interativo do veículo.
 
 Os caminhos a partir de domain/data/presentation são relativos a features/budget. Arquivos de datasource, repositório, entidades/BLoCs e páginas migrados anteriormente do Sales foram preservados para a futura integração, mas não são ligados ao BudgetModule ativo. Não confundir as páginas antigas budget_list_page.dart/budget_register_page.dart com as páginas ativas acima.
@@ -22,7 +40,7 @@ Os caminhos a partir de domain/data/presentation são relativos a features/budge
 
 Entrada igual ao Sales: SplashModule → ServerIpPage quando necessário → AuthModule → /budget/. A autenticação continua real e compartilhada; o tema do Sales é usado em todas as telas. Nenhuma alteração na API ou no Firebird é necessária para esta organização.
 
-A lista contém três exemplos fictícios, filtros e acesso aos detalhes. A edição tem cliente/pagamento, peças/mão de obra, veículo, inspeção e revisão. O catálogo e os rascunhos permanecem apenas em memória; a promoção da interface não implica persistência de produção. As 22 regiões preservam os IDs do Delphi, mas os nomes e lateralidade ainda precisam de validação com o negócio.
+O editor demonstrativo preservado tem três exemplos, peças/mão de obra, veículo, inspeção e revisão, todos em memória e fora da rota ativa. As 22 regiões preservam os IDs do Delphi; nomes e lateralidade ainda precisam de validação com o negócio. O fluxo real disponível está descrito na camada atual acima.
 
 ## Verificar
 

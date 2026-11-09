@@ -10,7 +10,7 @@ A API calcula totais, valida referências, respeita permissões com identidade J
 
 TB_APP_BUDGET_OP é uma tabela técnica aditiva para idempotência, criada pelo script setup-autocenter.js. Já foi aplicada à base local, sem alterar registros comerciais. As tabelas do Delphi não foram alteradas. Novos IDs usam os generators existentes; numeração comercial nova continua delegada ao fluxo legado. BLOBs de observação são codificados em WIN1252, compatível com a base/Delphi examinados.
 
-Validação automática: análise Flutter, testes de navegação/edição/persistência em 320/1000 pixels, contrato HTTP, transações/rollback, concorrência, permissões, arredondamento e 22 regiões × 4 estados. Leitura real do orçamento e dos nove cadastros validada; cores retornaram vazias. Build web e APK debug gerados. Escrita comercial real, regras específicas do cliente e uso físico são homologação manual, com roteiro em HOMOLOGACAO.md. Contrato da API em local-gestao-api/CONTRATO-AUTOCENTER.md.
+Validação automática: análise Flutter, testes de navegação/edição/persistência em 320/1000 pixels, contrato HTTP, transações/rollback, concorrência, permissões, arredondamento e 22 regiões × 4 estados. Leitura real do orçamento e dos nove cadastros validada; a referência de cores foi corrigida em 2026-11-09 para TB_COLOR, com 16 registros verificados. Build web e APK debug gerados. Escrita comercial real, regras específicas do cliente e uso físico são homologação manual, com roteiro em HOMOLOGACAO.md. Contrato da API em local-gestao-api/CONTRATO-AUTOCENTER.md.
 
 O fluxo aprovado foi promovido em 2026-11-02. Existe uma única entrada, `lib/main.dart`; não há entrada separada de protótipo nem tela de boas-vindas que pule a autenticação.
 

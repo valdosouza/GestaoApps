@@ -9,6 +9,11 @@ abstract class CompleteBudgetWriter {
     String operationId,
   );
   Future<int?> findOperation(String operationId);
+  Future<Map<String, dynamic>> createCatalog(
+    String kind,
+    String label, {
+    Map<String, String> parameters = const {},
+  });
   Future<CatalogPage> catalog(
     String kind, {
     String search = '',
@@ -18,7 +23,13 @@ abstract class CompleteBudgetWriter {
 }
 
 class CatalogPage {
-  const CatalogPage(this.rows, this.total, this.offset);
+  const CatalogPage(
+    this.rows,
+    this.total,
+    this.offset, {
+    this.canCreate = false,
+  });
+  final bool canCreate;
   final List<Map<String, dynamic>> rows;
   final int total, offset;
 }
@@ -129,7 +140,35 @@ class CompleteBudgetRepository extends BudgetDraftRepository
           .toList(),
       (j['meta']['total'] as num).toInt(),
       (j['meta']['offset'] as num).toInt(),
+      canCreate: j['canCreate'] == true,
     );
+  }
+
+  @override
+  Future<Map<String, dynamic>> createCatalog(
+    String kind,
+    String label, {
+    Map<String, String> parameters = const {},
+  }) async {
+    try {
+      final response = await httpClient
+          .post(
+            await uri('catalog/$kind'),
+            headers: await requestOptions(),
+            body: jsonEncode({...parameters, 'label': label}),
+          )
+          .timeout(const Duration(seconds: 30));
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw StateError(message(response.body));
+      }
+      return Map<String, dynamic>.from(decode(response.body) as Map);
+    } on StateError {
+      rethrow;
+    } catch (_) {
+      throw StateError(
+        'Não foi possível confirmar o cadastro. Pesquise o nome antes de tentar novamente.',
+      );
+    }
   }
 }
 

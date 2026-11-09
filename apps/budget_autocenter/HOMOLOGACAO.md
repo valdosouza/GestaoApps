@@ -9,7 +9,7 @@ Use uma cópia de teste do banco. As verificações automáticas não criaram or
 3. Na pasta do AutoCenter: `flutter run -d chrome --web-port=4182`, ou `flutter run -d ID_DO_APARELHO` para Android. Use sempre o mesmo navegador/perfil/porta para reencontrar os pendentes web.
 4. Configure o servidor, selecione o estabelecimento e entre com um usuário que tenha vendedor associado e permissões de visualizar/inserir/alterar orçamento; excluir é verificado no servidor quando itens são removidos.
 
-Na base examinada, a pesquisa de cores de veículo retornou zero registros. Cadastre as cores pelo Gestão antes de testar um veículo novo. Peças, serviços, preços, estoques, marcas, modelos, tipos e veículos responderam às consultas reais.
+Correção em 2026-11-09. As cores vêm de TB_COLOR, que possui 16 registros nesta base. A consulta anterior usava TB_COR_VEICULO e levou à conclusão incorreta de cadastro vazio. Testar cadastro de marca, modelo vinculado à marca, tipo e cor pelo app, seleção automática, reaproveitamento do mesmo nome e bloqueio para usuário sem permissão. O cadastro é salvo imediatamente no Gestão, independentemente do envio do orçamento. Peças, serviços, preços, estoques, marcas, modelos, tipos e veículos responderam às consultas reais.
 
 ## Roteiro principal
 

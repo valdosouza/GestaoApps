@@ -78,6 +78,21 @@ class _CatalogState extends State<_Catalog> {
     load();
   }
 
+  Future<void> create() async {
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => _CreateCatalog(
+        api: widget.api,
+        kind: widget.kind,
+        title: widget.title,
+        parameters: widget.parameters,
+        initialName: controller.text.trim(),
+      ),
+    );
+    if (mounted && result != null) Navigator.pop(context, result);
+  }
+
   @override
   Widget build(BuildContext context) => AlertDialog(
     title: Text(widget.title),
@@ -150,10 +165,118 @@ class _CatalogState extends State<_Catalog> {
       ),
     ),
     actions: [
+      if (page?.canCreate == true)
+        TextButton.icon(
+          onPressed: loading ? null : create,
+          icon: const Icon(Icons.add),
+          label: const Text('Cadastrar novo'),
+        ),
       TextButton(
         onPressed: () => Navigator.pop(context),
         child: const Text('Fechar'),
       ),
     ],
+  );
+}
+
+class _CreateCatalog extends StatefulWidget {
+  const _CreateCatalog({
+    required this.api,
+    required this.kind,
+    required this.title,
+    required this.parameters,
+    required this.initialName,
+  });
+  final CompleteBudgetWriter api;
+  final String kind, title, initialName;
+  final Map<String, String> parameters;
+  @override
+  State<_CreateCatalog> createState() => _CreateCatalogState();
+}
+
+class _CreateCatalogState extends State<_CreateCatalog> {
+  final form = GlobalKey<FormState>();
+  late final name = TextEditingController(text: widget.initialName);
+  bool saving = false;
+  String? error;
+
+  @override
+  void dispose() {
+    name.dispose();
+    super.dispose();
+  }
+
+  Future<void> save() async {
+    if (saving || !form.currentState!.validate()) return;
+    setState(() {
+      saving = true;
+      error = null;
+    });
+    try {
+      final result = await widget.api.createCatalog(
+        widget.kind,
+        name.text.trim(),
+        parameters: widget.parameters,
+      );
+      if (mounted) Navigator.pop(context, result);
+    } catch (e) {
+      if (mounted)
+        setState(() {
+          saving = false;
+          error = e is StateError
+              ? e.message
+              : 'Não foi possível salvar o cadastro.';
+        });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => PopScope(
+    canPop: !saving,
+    child: AlertDialog(
+      title: Text('Cadastrar ${widget.title.toLowerCase()}'),
+      scrollable: true,
+      content: Form(
+        key: form,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'O cadastro será salvo no Gestão e selecionado neste orçamento.',
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: name,
+              autofocus: true,
+              enabled: !saving,
+              maxLength: 100,
+              textCapitalization: TextCapitalization.characters,
+              decoration: const InputDecoration(
+                labelText: 'Descrição',
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) =>
+                  (value ?? '').trim().isEmpty ? 'Informe a descrição' : null,
+              onFieldSubmitted: (_) => save(),
+            ),
+            if (error != null)
+              Text(
+                error!,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: saving ? null : () => Navigator.pop(context),
+          child: const Text('Cancelar'),
+        ),
+        FilledButton(
+          onPressed: saving ? null : save,
+          child: Text(saving ? 'Salvando...' : 'Salvar e selecionar'),
+        ),
+      ],
+    ),
   );
 }

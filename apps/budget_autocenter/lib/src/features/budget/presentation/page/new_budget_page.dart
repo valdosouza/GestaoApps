@@ -228,6 +228,17 @@ class _NewBudgetState extends State<NewBudgetPage> {
 
   Future<void> save({bool retry = false}) async {
     if (saving || confirming || (uncertain && !retry)) return;
+    // Completa apenas a inspeção em edição. Reenvios usam o conteúdo original.
+    final checklist = document['checklist'] as Map?;
+    if (!retry &&
+        !uncertain &&
+        checklist != null &&
+        document['checklistDirty'] != false) {
+      final regions = '${checklist['regions'] ?? ''}';
+      if (regions.length <= 22 && RegExp(r'^[NRQA_]*$').hasMatch(regions)) {
+        checklist['regions'] = regions.padRight(22, '_').replaceAll('_', 'N');
+      }
+    }
     if (!(form.currentState?.validate() ?? false)) {
       setState(
         () => error = 'Confira os campos obrigatórios nas seções do orçamento.',

@@ -89,6 +89,12 @@ Map<String, dynamic> fixture() => {
 };
 
 class CompleteFake extends FakeWriter implements CompleteBudgetWriter {
+  @override
+  Future<Map<String, dynamic>> createCatalog(
+    String kind,
+    String label, {
+    Map<String, String> parameters = const {},
+  }) async => {'id': 10, 'label': label};
   Map<String, dynamic>? submitted;
   bool conflict = false;
   @override
@@ -234,6 +240,48 @@ void main() {
         expect(writer.submitted!['items'].length, 3);
         expect(writer.submitted!['checklist']['regions'], '${'N' * 21}A');
         expect(writer.submitted!['vehicle']['plate'], 'ABC1D23');
+        expect(await store.all(), isEmpty);
+        expect(t.takeException(), isNull);
+      },
+    );
+  }
+  for (final regions in ['', '${'_' * 21}A']) {
+    testWidgets(
+      'salvar completa regiões pendentes preservando avarias $regions',
+      (t) async {
+        final store = await PreferencesPendingBudgetStore.open();
+        final writer = CompleteFake();
+        final seed = await store.allocate(DateTime(2026, 11, 2));
+        final document = fixture();
+        document['checklistDirty'] = true;
+        document['checklist']['regions'] = regions;
+        final draft = PendingBudget(
+          id: seed.id,
+          sequence: seed.sequence,
+          date: seed.date,
+          customer: customer,
+          payment: payment,
+          document: document,
+        );
+        await t.pumpWidget(
+          MaterialApp(
+            home: NewBudgetPage(
+              store: store,
+              writer: writer,
+              initialDraft: draft,
+            ),
+          ),
+        );
+        await t.pumpAndSettle();
+        await t.ensureVisible(find.text('Salvar rascunho'));
+        await t.tap(find.text('Salvar rascunho'));
+        await t.pumpAndSettle();
+        await t.tap(find.text('Confirmar alterações'));
+        await t.pumpAndSettle();
+        expect(
+          writer.submitted!['checklist']['regions'],
+          regions.isEmpty ? 'N' * 22 : '${'N' * 21}A',
+        );
         expect(await store.all(), isEmpty);
         expect(t.takeException(), isNull);
       },

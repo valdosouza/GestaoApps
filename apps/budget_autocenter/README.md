@@ -29,7 +29,7 @@ O preenchimento completo é salvo automaticamente no aparelho como **PENDENTE**,
 
 Reinicie a API existente para carregar as novas rotas. Nesta máquina, a tabela técnica de envios já está preparada. Em outra instalação da API, execute uma vez: `node scripts/setup-autocenter.js --apply`. Nenhum orçamento comercial foi criado pelos testes automáticos.
 
-Consulte [HOMOLOGACAO.md](HOMOLOGACAO.md) para testar no Gestão. A base examinada não tem cores de veículo cadastradas; cadastre-as no desktop antes de testar um veículo novo. Numeração comercial nova permanece para o fluxo legado; aprovação, pedido/faturamento, comissões e regras comerciais especiais ainda precisam do escopo/validação descritos no roteiro. Pendentes de envio incerto da versão antiga de cabeçalho precisam de conferência manual no ERP; não são reenviados pelo novo protocolo automaticamente.
+Consulte [HOMOLOGACAO.md](HOMOLOGACAO.md) para testar no Gestão. As cores vêm de TB_COLOR, como no Delphi. Marca, modelo, tipo e cor permitem cadastro pelo app, conforme permissão do usuário, com seleção automática após salvar. Numeração comercial nova permanece para o fluxo legado; aprovação, pedido/faturamento, comissões e regras comerciais especiais ainda precisam do escopo/validação descritos no roteiro. Pendentes de envio incerto da versão antiga de cabeçalho precisam de conferência manual no ERP; não são reenviados pelo novo protocolo automaticamente.
 
 Web e Android possuem estrutura de execução. Android usa SDK 36, NDK 28.2.13676358 e JDK 21, alinhados à base usada no Sales. O identificador próprio é `com.setes.budget_autocenter`; assinatura de publicação ainda precisa ser configurada.
 

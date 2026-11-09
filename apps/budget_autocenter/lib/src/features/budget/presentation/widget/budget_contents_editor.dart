@@ -407,6 +407,9 @@ class _ContentsState extends State<BudgetContentsEditor> {
           ),
         ),
         const SizedBox(height: 12),
+        const Text(
+          'Regiões sem marcação serão salvas como Normal. Marque apenas as avarias.',
+        ),
         DropdownButtonFormField<int>(
           initialValue: selected,
           isExpanded: true,
@@ -630,7 +633,7 @@ class _ContentsState extends State<BudgetContentsEditor> {
                     ? null
                     : () => change(
                         () => d['checklist'] = <String, dynamic>{
-                          'regions': '_' * 22,
+                          'regions': 'N' * 22,
                           for (final k in accessoryNames.keys) k: 'N',
                           '_confirmed': false,
                         },
